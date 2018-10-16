@@ -14,6 +14,8 @@ import com.dae.entidad.Usuario;
 public interface ServiceUsuarioInterfaz {
 
     public void crearUsuario(Usuario usuario);
+    
+    public Usuario registraUsuario(String nombreUsuario, String password);
 
     public void listarUsuarios();
 

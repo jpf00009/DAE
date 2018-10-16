@@ -7,6 +7,8 @@ package com.dae.entidad;
 
 public class Usuario {
 
+
+
     private static int contador=1;
     private int id;
     private String nombreUsuario;
@@ -86,6 +88,20 @@ public class Usuario {
      */
     public void setId(int id) {
         this.id = id;
+    }
+    
+        /**
+     * @param nombreUsuario the nombreUsuario to set
+     */
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
     
 }

@@ -8,6 +8,7 @@ package com.dae.servidor;
 import com.dae.entidad.Evento;
 import com.dae.entidad.Usuario;
 import com.dae.excepciones.FalloAcceso;
+import com.dae.excepciones.usuarioNoCreado;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +91,7 @@ public class ServiceUsuarioImp implements ServiceUsuarioInterfaz {
             throw new FalloAcceso();
         } else {
             logueado.setToken(UUID.randomUUID().toString());
-                        System.out.println("El token dentro del servicio es: " + logueado.getToken());
+            System.out.println("El token dentro del servicio es: " + logueado.getToken());
 
         }
 
@@ -111,6 +112,22 @@ public class ServiceUsuarioImp implements ServiceUsuarioInterfaz {
             }
         }
         return false;
+
+    }
+
+    @Override
+    public Usuario registraUsuario(String nombreUsuario, String password) {
+
+        Usuario nuevo = new Usuario();
+        nuevo.setNombreUsuario(nombreUsuario);
+        nuevo.setPassword(password);
+
+        if (nuevo == null) {
+            throw new usuarioNoCreado();
+        } else {
+            usuarios.add(nuevo);
+            return nuevo;
+        }
 
     }
 
