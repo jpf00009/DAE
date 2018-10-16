@@ -7,8 +7,6 @@ package com.dae.servidor;
 
 import com.dae.entidad.Evento;
 import com.dae.entidad.Usuario;
-import com.dae.excepciones.eventoNoEncontrado;
-import com.dae.excepciones.palabraClaveNoEncontrada;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -81,44 +79,17 @@ public class ServiceEventoImp implements ServiceEventoInterfaz {
     }
 
     @Override
-    public List<Evento> BuscarEventosPorTipo(String opcion, String clave) {
+    public void BuscarEventosPorTipo(String opcion) {
         Evento eventaco = new Evento();
-        List<Evento> eventosTipo = new ArrayList<>();
 
         Iterator<Evento> it = eventos.iterator();
         while (it.hasNext()) {
             eventaco = it.next();
+            System.out.println("Nombre Evento del tipo: " + opcion);
             if (new String(eventaco.getTipo()).equals(opcion)) {
-                if (eventaco == null) {
-                    throw new eventoNoEncontrado();
-                } else {
-                    eventosTipo.add(eventaco);
-                }
+                System.out.println("Nombre del evento: " + eventaco.getNombreEvento() + " Id del evento: " + eventaco.getId());
             }
         }
-        if (eventosTipo == null) {
-            throw new eventoNoEncontrado();
-        }
-        //OPCIÓN CON PALABRA CLAVE VACIA
-        if (clave.isEmpty()) {
-            return eventosTipo;
-        }
-        //OPCIÓN CON PALABRA CLAVE
-        Evento eventoClave = new Evento();
-        List<Evento> listEventosClave = new ArrayList<>();
-        Iterator<Evento> it2 = eventosTipo.iterator();
-        while (it2.hasNext()) {
-            eventoClave = it2.next();
-            if (new String(eventoClave.getDescripcion()).contains(clave)) {
-                listEventosClave.add(eventoClave);
-            }
-        }
-
-        if (listEventosClave == null) {
-            throw new palabraClaveNoEncontrada();
-        }
-
-        return listEventosClave;
 
     }
 
@@ -150,6 +121,30 @@ public class ServiceEventoImp implements ServiceEventoInterfaz {
             }
         }
 
+    }
+
+    @Override
+    public void apuntarseEvento(Evento evento, Usuario usuario) {
+        evento.añadirUsuarioInscrito(usuario);
+    }
+    
+    @Override
+    public void borrarseEvento(Evento evento, Usuario usuario) {
+        evento.borrarUsuarioInscrito(usuario);
+    }
+
+    @Override
+    public void listarUsuariosEvento(Evento evento) {
+        List<Usuario> usuariosInscritos = evento.getUsuariosInscritos();
+        Usuario usuario = new Usuario();
+        Iterator<Usuario> it = usuariosInscritos.iterator();
+        System.out.println("LISTA DE USUARIOS INSCRITOS: ");
+        while (it.hasNext()) {
+            System.out.println("------------ ");
+            usuario = it.next();
+            System.out.println("Nombre usuario: " + usuario.getNombreUsuario());
+
+        }
     }
 
 }

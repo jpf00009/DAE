@@ -8,10 +8,6 @@ package com.dae.cliente;
 import com.dae.entidad.Evento;
 import com.dae.entidad.Usuario;
 import com.dae.excepciones.FalloAcceso;
-import com.dae.excepciones.eventoNoEncontrado;
-import com.dae.excepciones.noExistenEventos;
-import com.dae.excepciones.palabraClaveNoEncontrada;
-import com.dae.excepciones.usuarioNoCreado;
 import com.dae.servidor.ServiceEventoImp;
 //import com.dae.servidor.ServiceEventoInterfaz;
 
@@ -22,9 +18,7 @@ import com.dae.servidor.ServiceUsuarioInterfaz;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class ClienteGestor {
@@ -66,17 +60,16 @@ public class ClienteGestor {
         GestorUsuario.crearUsuario(usu1);
 
         Evento e1 = new Evento("Volley", "Jaén", "01/05/2018", "Actividad deportiva", "Partido amistoso", 12, usu1);
-        Evento e2 = new Evento("Basket", "Jaén", "01/05/2018", "Actividad deportiva", "amistoso partido", 15, usu1);
 //        Evento e2 = new Evento("Basket");
         GestorEvento.crearEventoSimple(e1);
-        GestorEvento.crearEventoSimple(e2);
+//        GestorEvento.crearEventoSimple(e2);
 
         while (!salirMenuPrincipal) {
-
             System.out.println("1. Registrar Usuario");
-            System.out.println("2. Buscar Eventos por tipo");
-            System.out.println("3. Salir");
-            System.out.println("4. Logear Usuario");
+            System.out.println("2. Listar Usuarios");
+            System.out.println("3. Buscar Eventos por tipo");
+            System.out.println("4. Salir");
+            System.out.println("5. Logear Usuario");
 
             try {
 
@@ -86,87 +79,60 @@ public class ClienteGestor {
                 switch (opcion) {
 
                     case 1:
-
-                        System.out.println("Has seleccionado la opcion 1: Registrar Usuario");
-
-                        System.out.println("Introduce un nombre de usuario (Email: aaaa@gmail.com)");
+                        System.out.println("Has seleccionado la opcion 1");
+                        System.out.println("Introduce un nombre de usuario");
                         texto = br.readLine();
-
                         System.out.println("Introduce una contraseña");
                         texto2 = br.readLine();
-
-                        try {
-                            Usuario nuevo = new Usuario();
-
-                            nuevo = GestorUsuario.registraUsuario(texto, texto2);
-
-                            System.out.println("Se ha registrado al usuario: " + nuevo.getNombreUsuario() + "correctamente");
-                        } catch (usuarioNoCreado u) {
-                            System.out.printf("El usuario no ha sido creado satisfactoriamente");
-                        }
-
+                        GestorUsuario.crearUsuario(new Usuario(texto, texto2, token));
+                        System.out.println("Se ha registrado al usuario: '" + texto + "' - '" + texto2 + "'");
                         break;
-
                     case 2:
-                        System.out.println("Has seleccionado la opcion 2: Buscar eventos por tipo");
-                        System.out.println("Selecciona los eventos de un tipo a mostrar");
+                        System.out.println("Has seleccionado la opcion 2");
+                        GestorUsuario.listarUsuarios();
+                        break;
+                    case 3:
+                        System.out.println("Has seleccionado la opcion 3");
+                        System.out.println("Selecciona el eventos de un tipo a mostrar");
 
                         System.out.println("1. Charla");
                         System.out.println("2. Curso");
                         System.out.println("3. Actividad deportiva");
                         System.out.println("4. Visita cultural");
                         String tipoEve = br.readLine();
-
-                        System.out.println("Introduce una palabra clave a buscar en la descripción del Evento escogido (Dejar vacío si no se quiere filtrar por esta opción) :");
-                        String clave = br.readLine();
-
-                        List<Evento> eventosTipo = new ArrayList<>();
-
                         boolean salirTipoEvento = false;
                         while (!salirTipoEvento) {
                             switch (tipoEve) {
                                 case "1":
                                     tipoEve = "Charla";
                                     salirTipoEvento = true;
+                                    GestorEvento.BuscarEventosPorTipo(tipoEve);
                                     break;
                                 case "2":
                                     tipoEve = "Curso";
                                     salirTipoEvento = true;
+                                    GestorEvento.BuscarEventosPorTipo(tipoEve);
                                     break;
                                 case "3":
                                     tipoEve = "Actividad deportiva";
                                     salirTipoEvento = true;
+                                    GestorEvento.BuscarEventosPorTipo(tipoEve);
                                     break;
                                 case "4":
                                     tipoEve = "Visita cultural";
                                     salirTipoEvento = true;
+                                    GestorEvento.BuscarEventosPorTipo(tipoEve);
                                     break;
 
                                 default:
                                     System.out.println("Debe elegir una opcion entre las anteriores");
                             }
                         }
-                        try {
-
-                            eventosTipo = GestorEvento.BuscarEventosPorTipo(tipoEve, clave);
-
-                            System.out.println("Eventos del tipo " + tipoEve + " :");
-                            for (int i = 0; i < eventosTipo.size(); i++) {
-                                System.out.println(eventosTipo.get(i).getNombreEvento());
-                            }
-
-                        } catch (noExistenEventos a) {
-                            System.out.println("No existen eventos del tipo escogido");
-                        } catch (eventoNoEncontrado e){
-                            System.out.println("No se han encontrado eventos del tipo escogido");
-                        } catch (palabraClaveNoEncontrada p){
-                            System.out.println("No se han encontrado la palabra clave en los Eventos del tipo escogido");
-                        }
-                        break;
-                    case 3:
-                        salirMenuPrincipal = true;
                         break;
                     case 4:
+                        salirMenuPrincipal = true;
+                        break;
+                    case 5:
                         System.out.println("Has seleccionado la opcion 5");
                         Usuario logueado = null;
                         boolean acceso = false;
@@ -200,6 +166,7 @@ public class ClienteGestor {
                             System.out.println("\n1. Crear Evento");
                             System.out.println("2. Buscar Evento");
                             System.out.println("3. Borrar Evento");
+                            System.out.println("4. Inscribirse en Evento");
                             System.out.println("5. Listar Eventos creados por Usuario");
                             System.out.println("6. Salir");
 
@@ -285,7 +252,12 @@ public class ClienteGestor {
                                             break;
                                         case 4:
                                             System.out.println("Has seleccionado la opcion 4");
-                                            GestorEvento.listarEventos();
+//                                            GestorEvento.listarEventos();
+                                            System.out.println("Introduce el id del evento al que quieras inscribirte");
+                                            opcion = sn.nextInt();
+                                            evento = GestorEvento.BuscarEventos(opcion);
+                                            GestorEvento.apuntarseEvento(evento, logueado);
+                                            GestorEvento.listarUsuariosEvento(evento);
                                             salirOpciones = true;
                                             break;
                                         case 5:
@@ -296,6 +268,15 @@ public class ClienteGestor {
                                         case 6:
                                             salirOpciones = true;
                                             salirLogueo = true;
+                                            break;
+                                        case 7:
+                                            System.out.println("Has seleccionado la opcion 7");
+                                            System.out.println("Introduce el id del evento al que quieras desinscribirte");
+                                            opcion = sn.nextInt();
+                                            evento = GestorEvento.BuscarEventos(opcion);
+                                            GestorEvento.borrarseEvento(evento, logueado);
+                                            GestorEvento.listarUsuariosEvento(evento);
+                                            salirOpciones = true;
                                             break;
                                         default:
                                             System.out.println("Elija una de las opciones anteriores entre 1 y 5");
